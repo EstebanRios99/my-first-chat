@@ -31,12 +31,12 @@ export class LoginPage implements OnInit {
     this.chatService.signUp(this.credentialForm.value).then(async user => {
       loading.dismiss();
       const alert = await this.alertController.create({
-        header: 'Your account created successful',
-        message: ':)',
+        header: 'Your account has been created successfully',
+        message: 'Thank you for choosing us',
         buttons: ['OK']
       })     
       await alert.present();
-      //this.router.navigateForward('/chat');
+      this.router.navigateForward('/chat');
     }, async err => {
       loading.dismiss();
       const alert = await this.alertController.create({
