@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "crud2020b-eb4b0": {
+      "hosting": {
+        "app": [
+          "crud2020b-eb4b0"
+        ]
+      }
+    }
+  }
+}
