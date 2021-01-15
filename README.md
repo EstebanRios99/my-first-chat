@@ -9,9 +9,12 @@
 * ionic generate service services/chat
 ### Congfiguración Inicial
 ***
-Primero en el archivo *environment.ts* creamos una propiedad para poder asignar las claves de uso y poder conectar nuestro proyecto con Firebase. Estas claves se las obtiene al momento de crear una aplicación dentro de Firebase.
+Primero en el archivo *environment.ts* creamos una propiedad para poder asignar las claves de uso y poder conectar nuestro proyecto con Firebase. Estas claves se las obtiene al momento de crear una aplicación dentro de Firebase.  
+
 ![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/1.JPG)  
-Luego lo que se debe hacer es importar a nuestro proyecto todos los módulos de angular y firebase que vamos a utilizar, en el módulo *AngularFireModule* debemos inicializarlo para que reconozca las variables de firebase creadas previamente.
+
+Luego lo que se debe hacer es importar a nuestro proyecto todos los módulos de angular y firebase que vamos a utilizar, en el módulo *AngularFireModule* debemos inicializarlo para que reconozca las variables de firebase creadas previamente.  
+
 ![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/2.JPG)
 El siguiente paso a realizar es configurar el archivo de rutas, para que nuestra ruta principal sea la página de *Login*.
 ![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/3.JPG)  
