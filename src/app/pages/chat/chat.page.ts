@@ -17,8 +17,9 @@ export class ChatPage implements OnInit {
   constructor(private chatService: ChatService,
     private router: NavController) { }
 
-  ngOnInit() {
-    this.messages = this.chatService.getChatMessages();
+   ngOnInit() {
+  
+    this.messages =  this.chatService.getChatMessages();
   }
 
   sendMessage(){

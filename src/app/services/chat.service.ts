@@ -4,6 +4,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import firebase from 'firebase/app'
 import {switchMap, map} from 'rxjs/operators';
+import * as Crypto from 'crypto-js';
 
 export interface User {
   uid: string;
@@ -24,6 +25,7 @@ export interface Message {
 })
 export class ChatService {
   currentUser: User = null;
+  secretKey = "YourSecretKeyForEncryption&Descryption";
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore) { 
     this.afAuth.onAuthStateChanged(user => {
@@ -58,8 +60,10 @@ export class ChatService {
   }
 
   addChatMessage(msg){
+    
+    const msgEncrypt= Crypto.AES.encrypt(msg, this.secretKey.trim()).toString();
     return this.afs.collection('messages').add({
-      msg: msg,
+      msg: msgEncrypt,
       from: this.currentUser.uid,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     });
@@ -78,8 +82,10 @@ export class ChatService {
         for (let m of messages){
           m.fromName = this.getUserForMsg(m.from, users);
           m.myMsg = this.currentUser.uid === m.from;
+          m.msg = this.getMsgDecrypt(m.msg);
         }
         console.log('all messages: ', messages);
+        
         return messages;
       })
     )
@@ -87,6 +93,9 @@ export class ChatService {
   
   getUsers(){
     return this.afs.collection('users').valueChanges({idField:'uid'}) as Observable<User[]>;
+  }
+  getMsgDecrypt(message){
+     return   Crypto.AES.decrypt(message, this.secretKey.trim()).toString(Crypto.enc.Utf8);  
   }
 
   getUserForMsg(msgFromId, users: User[]): string {
