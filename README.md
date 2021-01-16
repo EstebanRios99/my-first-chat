@@ -163,3 +163,7 @@ Al momento de generar la *APK* tenia problemas con el *Android Studio* y lo inte
 
 ![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/26.JPG)  
 
+## Video demostrativo de la APP
+***
+[Enlace del video](https://youtu.be/Xa6O7Ikm_Uo)
+
