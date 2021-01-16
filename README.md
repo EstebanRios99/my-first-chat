@@ -159,3 +159,7 @@ Y finalmente creamos un *footer* donde ira el *textArea* del mensaje, usamos el 
 
 ## Errores
 ***
+Al momento de generar la *APK* tenia problemas con el *Android Studio* y lo intente solucionar, pero al momento que volví a ejecutar el comando en *Ionic* el proceso se tardo demasiado tiempo.  
+
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/26.JPG)  
+
