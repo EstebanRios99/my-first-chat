@@ -7,6 +7,7 @@
 * ionic generate page pages/login
 * ionic generate page pages/chat
 * ionic generate service services/chat
+* npm install crypto-js --save 
 ### Congfiguración Inicial
 ***
 Primero en el archivo *environment.ts* creamos una propiedad para poder asignar las claves de uso y poder conectar nuestro proyecto con Firebase. Estas claves se las obtiene al momento de crear una aplicación dentro de Firebase.  
@@ -96,14 +97,65 @@ Finalmente creamos dos botones que vamos a utilizar para registrar un nuevo usua
 
 ![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/14.JPG)
 
+## Implementación del chat
+***
+Lo que debemos hacer es modificar el archivo *chat.service.ts*, el primer paso es importar la librería *crypto-js*. Luego debemos crear la interfaz de mensaje con los campos que se muestran en la imagen, el campo de *createdAt* utilizan un método de *Firebase* que permite generar los *timestamp*. Y en la parte donde creamos la propiedad de currentUser creamos otra propiedad con una clave secreta *(secretKey)* que nos permita realizar la encriptación.  
 
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/15.JPG)  
 
+Luego el primer método que vamos a crear es el método para guardar los mensajes *(addChatMessage)* y pasamos el parámetro *msg* (mensaje), creamos una constante *msgEncrypt* y utilizamos la especifiación *AES* y el método *encrypt* para encriptar el mensaje, pasamos el mensaje *(msg)* y utilizamos la clave secreta *(secretKey)* y lo transformamos a *string* con el método *toString.*  
 
+Después usando la clase *AngularFirestore*, el método *collection* para seleccionar la colección que queremos modificar en este caso *(messages)* y el método *add* para guardar la información necesaria del mensaje: el mensaje encriptado, quien envió el mensaje y la fecha de creación con el método *serverTimestamp.*  
 
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/16.JPG)  
 
+El siguiente método que se crea es el de mostrar los mensajes *(getChatMessages)*, y lo primero que se hace es crear un arreglo de usuarios *(users)*, luego usando el método de obtener todos los usuarios y el método *pipe* tomamos todo el arreglo y le asignamos al arreglo usuarios *(users)*. Luego usando la clase *AngularFirestore* y el método collection para extraer la colección de mensajes *(messages)*, con el método *orderBy* ordenamos los mensajes según la información del *createdAt*, con el método *valueChanges* enlistamos todos los datos de acuerdo a su *id* y lo guardamos como un arreglo *Observable* de mensajes.  
 
+Luego con el método *map* recorremos el arreglo *messages* con la ayuda de un *for*, aquí usamos el método *getUserForMsg* para obtener el nombre del usuario que está enviando el mensaje, un método de comparación para saber si el *uid* del usuario de la sección activa es igual al *uid* del mensaje enviado y usamos el método *getMsgDecrypt* para desencriptar cada mensaje enviado, finalmente retornamos el arreglo *messages* con los cambios.  
 
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/17.JPG)  
 
+El método *getUser*s utiliza la clase *AngularFirestore*, el método *collection* para utilizar la colección de *users* y el método *valueChanges* para verificar el *uid* y lo guardamos en un arreglo O*bservable* de *User.*  
 
+El método *getMsgDecrypt* y enviamos el parámetro *message* y lo que hacemos es usar la especificación *AES* con el método *decrypt* para desencriptar el mensaje, dentro de este método mandamos el mensaje que vamos a desencriptar, la clave secreta *(secretKey)* y el método *toString* con el parámetro *Crypto.enc.utf8* para transformar el mensaje desencriptado al formato tradicional.  
 
+Y el método *getUserForMsg* recibe los parámetros *msgFromId* y el arreglo de *users* y lo que hace el método con la ayuda de un *for* es recorrer el el arreglo de los usuarios y comparar el *uid* del usuario con el *id* de la persona que envió el mensaje, y si esto sucede retorna el correo del usuario quien envió ese mensaje, caso contrario retorna un mensaje de usuario eliminado.  
 
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/18.JPG)  
+
+Luego nos vamos al archivo *chat.page.ts* e importamos las siguientes librerías, utilizamos el método *ViewChild* para actualizar la propiedad cada vez que el *DOM* se modifique, también implementamos las propiedades de *messeges* que recibe el arreglo de los mensajes y el *newMsg* que será la propiedad que reciba el nuevo mensaje.   
+
+Adicional a esto creamos las propiedades con las clases que vamos a implementar.  
+
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/19.JPG)  
+
+Luego dentro del método *ngOnInit* que se ejecuta cada vez que existe un cambio y al arreglo de los mensajes le asignamos el método *getChatMessages* previamente creado en nuestro *chat.service.ts* para que vaya mostrando toda la conversación incluyendo los nuevos mensajes.  
+
+El método *sendMessage* utiliza el método *addChatMessage* para enviar el mensaje, recibe el parámetro del nuevo mensaje y luego de enviarlo lo vuelve a hacer vacío y luego utiliza un *scrollToBottom* cuando ya la lista de mensajes va aumentando.   
+
+Y finalmente implementamos el método de *signOut* para cerrar la sesión, aquí usamos el método *signOut* creado en el *chat.service.ts* y luego usamos la clase *NavController (router)* para re-direccionar a la página del *Login.*  
+
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/20.JPG)  
+
+En el archivo *chat.page.html* en la parte de header creamos un botón con el icono de cerrar sesión, al botón le asignamos el método *signOut* y ese funcionara al momento de hacer *(click).*  
+
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/21.JPG)  
+
+En el *ion-content* implementamos la opción para mostrar los mensajes, usamos el *"*ngFor"* para obtener cada mensaje del arreglo, luego usamos el *ngClass* para crear una clase de acuerdo al *messge.myMsg* que se encarga de identificar si el usuario de la sesión envió o no el mensaje.  
+
+Luego mostramos quien envió el mensaje *(message.fromName)*, el texto del mensaje *(message.msg)* y la fecha en la q se envió *(message.createdAt).*  
+
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/22.JPG)  
+
+Y finalmente creamos un *footer* donde ira el *textArea* del mensaje, usamos el *ngModel* para asignar la variable *newMsg*, implementamos el *disabled* para que cuando el *textArea* este vacío el botón de enviar se deshabilite y finalmente el dicho botón se le asigna el método *sendMessage* que funcionará con cada *(click).*  
+
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/23.JPG)
+
+## CSS
+***
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/24.JPG)  
+
+![Image text](https://raw.githubusercontent.com/EstebanRios99/my-first-chat/master/capturas/25.JPG)  
+
+## Errores
+***
